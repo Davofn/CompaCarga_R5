@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#ffd400" />
+  <title>Comparador de cargadores R5</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <img class="brand-icon" src="icons/icon-192.png" alt="Icono" />
+      <img class="brand-renault" src="assets/renault-logo.png" alt="Renault" />
+      <div>
+        <h1>Comparador de cargadores (AC/DC)</h1>
+        <p>Renault 5 · coste y tiempo de carga</p>
+      </div>
+    </div>
+  </header>
+
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <h2>Tu comparador, estilo R5</h2>
+        
+      </div>
+      <img class="hero-car" src="assets/r5.png" alt="Renault 5" />
+    </div>
+  </section>
+
+  <main class="container">
+    <section class="card">
+      <h2>Parámetros de batería</h2>
+      <div class="grid">
+        <label>
+          <span>Batería útil (kWh)</span>
+          <input id="batteryKwh" type="number" min="1" step="0.1" value="50" />
+        </label>
+        <label>
+          <span>% Inicial</span>
+          <input id="socStart" type="number" min="0" max="100" step="1" value="20" />
+        </label>
+        <label>
+          <span>% Final</span>
+          <input id="socEnd" type="number" min="0" max="100" step="1" value="40" />
+        </label>
+        <div class="result">
+          <span>kWh a cargar</span>
+          <strong id="kwhToCharge">—</strong>
+        </div>
+      </div>
+      
+    </section>
+
+    <section class="card">
+      <h2>Cargadores</h2>
+
+      <div class="chargers">
+        <div class="charger">
+          <h3>Cargador A</h3>
+          <div class="grid">
+            <label>
+              <span>Potencia (kW)</span>
+              <input id="aPower" type="number" min="0" step="0.1" value="11" />
+            </label>
+            <label>
+              <span>Precio (€/kWh)</span>
+              <input id="aPrice" type="number" min="0" step="0.01" value="0.40" />
+            </label>
+            <div class="result">
+              <span>Coste (€)</span>
+              <strong id="aCost">—</strong>
+            </div>
+            <div class="result">
+              <span>Tiempo</span>
+              <strong id="aTime">—</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="charger">
+          <h3>Cargador B</h3>
+          <div class="grid">
+            <label>
+              <span>Potencia (kW)</span>
+              <input id="bPower" type="number" min="0" step="0.1" value="80" />
+            </label>
+            <label>
+              <span>Precio (€/kWh)</span>
+              <input id="bPrice" type="number" min="0" step="0.01" value="0.60" />
+            </label>
+            <div class="result">
+              <span>Coste (€)</span>
+              <strong id="bCost">—</strong>
+            </div>
+            <div class="result">
+              <span>Tiempo</span>
+              <strong id="bTime">—</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary">
+        <div class="pill">
+          <span>Ganador por coste</span>
+          <strong id="winnerCost">—</strong>
+        </div>
+        <div class="pill">
+          <span>Ganador por tiempo</span>
+          <strong id="winnerTime">—</strong>
+        </div>
+        <div class="pill">
+          <span>Diferencia de coste (B − A)</span>
+          <strong id="diffCost">—</strong>
+        </div>
+      </div>
+
+      <p class="hint">Notas: rellena potencia y precio de cada cargador y mira coste/tiempo.</p>
+    </section>
+
+    
+  </main>
+
+  <footer class="footer">
+    <small>v1 · Davo y ChatGPT</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
