@@ -32,6 +32,7 @@ function secondsToHMS(totalSeconds){
 // Tiempo_excel = IF(Potencia>0, (kWh_a_cargar/Potencia)/24, "")
 // En web: tiempoSeg = (kWh_a_cargar/Potencia)*3600
 
+
 function compute(){
   const battery = Math.max(0, parseFloat($("batteryKwh").value));
   const socStart = clamp(parseFloat($("socStart").value), 0, 100);
@@ -42,46 +43,82 @@ function compute(){
 
   const deltaSoc = (socEnd - socStart) / 100;
   const kwhToCharge = Math.max(0, deltaSoc * battery);
-
   $("kwhToCharge").textContent = fmtKwh(kwhToCharge);
 
-  // Charger A
+  function dcTimeCurve(powerInput){
+    const maxPower = Math.min(powerInput, 100);
+
+    const segments = [
+      {min:0, max:20, power:95},
+      {min:20, max:40, power:85},
+      {min:40, max:60, power:70},
+      {min:60, max:80, power:50},
+      {min:80, max:90, power:35},
+      {min:90, max:100, power:20},
+    ];
+
+    let totalSeconds = 0;
+
+    segments.forEach(seg => {
+      const start = Math.max(socStart, seg.min);
+      const end = Math.min(socEnd, seg.max);
+
+      if (end > start){
+        const segmentSoc = (end - start) / 100;
+        const segmentKwh = segmentSoc * battery;
+        const realPower = Math.min(seg.power, maxPower);
+        totalSeconds += (segmentKwh / realPower) * 3600;
+      }
+    });
+
+    return totalSeconds;
+  }
+
+  function calculateCharger(power, price, costEl, timeEl){
+    const cost = kwhToCharge * price;
+    costEl.textContent = fmtEUR(cost);
+
+    let timeSec;
+
+    if (power <= 11){
+      timeSec = power > 0 ? (kwhToCharge / power) * 3600 : NaN;
+      document.getElementById("dcInfo").style.display = "none";
+    } else {
+      timeSec = dcTimeCurve(power);
+      document.getElementById("dcInfo").style.display = "block";
+    }
+
+    timeEl.textContent = secondsToHMS(timeSec);
+    return {cost, timeSec};
+  }
+
   const aPower = Math.max(0, parseFloat($("aPower").value));
   const aPrice = Math.max(0, parseFloat($("aPrice").value));
-  const aCost = kwhToCharge * aPrice;
-  const aTimeSec = aPower > 0 ? (kwhToCharge / aPower) * 3600 : NaN;
+  const a = calculateCharger(aPower, aPrice, $("aCost"), $("aTime"));
 
-  $("aCost").textContent = fmtEUR(aCost);
-  $("aTime").textContent = secondsToHMS(aTimeSec);
-
-  // Charger B
   const bPower = Math.max(0, parseFloat($("bPower").value));
   const bPrice = Math.max(0, parseFloat($("bPrice").value));
-  const bCost = kwhToCharge * bPrice;
-  const bTimeSec = bPower > 0 ? (kwhToCharge / bPower) * 3600 : NaN;
+  const b = calculateCharger(bPower, bPrice, $("bCost"), $("bTime"));
 
-  $("bCost").textContent = fmtEUR(bCost);
-  $("bTime").textContent = secondsToHMS(bTimeSec);
-
-  // Winners
   let winnerCost = "—";
-  if (Number.isFinite(aCost) && Number.isFinite(bCost)){
-    if (Math.abs(aCost - bCost) < 1e-9) winnerCost = "Empate";
-    else winnerCost = aCost < bCost ? "Cargador A" : "Cargador B";
+  if (Number.isFinite(a.cost) && Number.isFinite(b.cost)){
+    if (Math.abs(a.cost - b.cost) < 1e-9) winnerCost = "Empate";
+    else winnerCost = a.cost < b.cost ? "Cargador A" : "Cargador B";
   }
 
   let winnerTime = "—";
-  if (Number.isFinite(aTimeSec) && Number.isFinite(bTimeSec)){
-    if (Math.abs(aTimeSec - bTimeSec) < 1e-6) winnerTime = "Empate";
-    else winnerTime = aTimeSec < bTimeSec ? "Cargador A" : "Cargador B";
+  if (Number.isFinite(a.timeSec) && Number.isFinite(b.timeSec)){
+    if (Math.abs(a.timeSec - b.timeSec) < 1e-6) winnerTime = "Empate";
+    else winnerTime = a.timeSec < b.timeSec ? "Cargador A" : "Cargador B";
   }
 
   $("winnerCost").textContent = winnerCost;
   $("winnerTime").textContent = winnerTime;
 
-  const diff = bCost - aCost;
+  const diff = b.cost - a.cost;
   $("diffCost").textContent = Number.isFinite(diff) ? fmtEUR(diff) : "—";
 }
+
 
 function wire(){
   const ids = ["batteryKwh","socStart","socEnd","aPower","aPrice","bPower","bPrice"];
