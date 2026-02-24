@@ -105,8 +105,6 @@
         </div>
       </div>
 
-      <p class="hint" id="dcInfo" style="display:none;">⚡ Se aplica curva de carga estándar estimada para Renault 5 (no oficial).</p>
-
       <div class="summary">
         <div class="pill">
           <span>Ganador por coste</span>
@@ -126,10 +124,30 @@
     </section>
 
     
-  </main>
+  
+<section class="card">
+  <h2>Histórico de cargas</h2>
+  <div style="display:flex;gap:10px;margin-bottom:10px;">
+    <button id="saveCharge">Guardar carga</button>
+    <button id="exportCSV">Exportar CSV</button>
+    <button id="clearHistory">Limpiar histórico</button>
+  </div>
+  <div style="overflow-x:auto;">
+    <table id="historyTable" style="width:100%;font-size:12px;">
+      <thead>
+        <tr>
+          <th>Fecha</th><th>%</th><th>kWh</th><th>kW</th><th>Tiempo</th><th>Coste €</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+</main>
 
   <footer class="footer">
-    <small>v1.1 · Davo y ChatGPT</small>
+    <small>v1.2 · Davo y ChatGPT</small>
   </footer>
 
   <script src="app.js"></script>
