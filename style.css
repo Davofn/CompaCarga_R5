@@ -187,6 +187,7 @@ input:focus, select:focus{
 .charger h3{
   margin:0 0 10px;
   font-size:14px;
+  color: var(--accent); /* 🔥 amarillo R5 */
 }
 
 /* ===== INFO (AC/DC) ===== */
@@ -289,4 +290,8 @@ th{
   .hero-car{
     width: 260px;
   }
+}
+#aInfo,
+#bInfo{
+  display: none;
 }
