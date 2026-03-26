@@ -1,5 +1,5 @@
 // Simple offline cache (cache-first for app shell)
-const CACHE_NAME = "r5-cargadores-pwa-v9";
+const CACHE_NAME = "r5 cargadores v1.6";
 const ASSETS = [
   "./",
   "./index.html",
