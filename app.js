@@ -239,5 +239,5 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("clearHistory")?.addEventListener("click",()=>{
     localStorage.removeItem("compacarga_r5_history");renderHistory();
   });
-  document.getElementById("exportCSV")?.addEventListener("click",exportCSV);
+  document.getElementById("exportCSV")?.addEventListener("click",exportCSV);{
 });
