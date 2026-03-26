@@ -1,182 +1,221 @@
-⚡ CompaCarga R5
+# ⚡ CompaCarga R5
 
-Calculadora avanzada de coste y tiempo de carga para el Renault 5 E-Tech (52 kWh).
+Calculadora avanzada de coste y tiempo de carga para el **Renault 5 E-Tech (52 kWh)**.
 
-Disponible online en:
+Disponible online en:  
 👉 https://davofn.github.io/CompaCarga_R5/
 
-🚗 ¿Qué es?
+---
 
-CompaCarga R5 es una Progressive Web App (PWA) diseñada para comparar de forma rápida y realista dos cargadores distintos para el Renault 5 E-Tech.
+## 🚗 ¿Qué es?
+
+**CompaCarga R5** es una **Progressive Web App (PWA)** diseñada para comparar de forma rápida y realista dos cargadores distintos para el Renault 5 E-Tech.
 
 Permite comparar:
 
-🔌 Dos cargadores distintos, configurables como AC o DC
-💶 Coste total de la carga
-⏱ Tiempo estimado de carga
-🏆 Ganador por coste
-🏁 Ganador por tiempo
-✅ Selección manual del cargador que finalmente eliges
-📝 Histórico de cargas guardadas
-📤 Exportación a CSV
+- 🔌 **Dos cargadores distintos**, configurables como **AC o DC**
+- 💶 **Coste total** de la carga
+- ⏱ **Tiempo estimado** de carga
+- 🏆 **Ganador por coste**
+- 🏁 **Ganador por tiempo**
+- ✅ **Selección manual** del cargador que finalmente eliges
+- 📝 **Histórico de cargas guardadas**
+- 📤 **Exportación a CSV**
 
-Está pensada específicamente para el Renault 5 E-Tech 52 kWh, con una lógica de cálculo adaptada a sus límites de carga.
+Está pensada específicamente para el **Renault 5 E-Tech 52 kWh**, con una lógica de cálculo adaptada a sus límites de carga.
 
-✨ Funcionalidades principales
-Comparación entre Cargador A y Cargador B
-Selección explícita del tipo de cargador:
-AC
-DC
-Aplicación automática de límites según el tipo:
-AC → máximo 11 kW
-DC → máximo 100 kW
-Mensaje informativo en pantalla indicando las restricciones aplicadas
-Resaltado visual del ganador por:
-coste
-tiempo
-Elección manual del cargador preferido
-Guardado en histórico del cargador seleccionado
-Exportación del histórico en formato CSV
-Diseño responsive para móvil y escritorio
-Instalación como app gracias a PWA
-🧠 Modelo de cálculo
-🔋 Energía a cargar
+---
 
-La energía a cargar se calcula así:
+## ✨ Funcionalidades principales
 
-kWh a cargar = ((% final - % inicial) / 100) × batería útil
+- 🔄 Comparación en tiempo real entre **Cargador A** y **Cargador B**
+- ⚙️ Selección explícita del tipo de cargador:
+  - **AC**
+  - **DC**
+- 🔒 Aplicación automática de límites del vehículo:
+  - **AC → máximo 11 kW**
+  - **DC → máximo 100 kW**
+- 💡 Mensajes dinámicos indicando restricciones aplicadas
+- 🎯 Resaltado automático del ganador directamente en cada tarjeta
+- 🎨 Identificación visual rápida (colores, badges, líneas superiores)
+- 🧠 Elección manual del cargador preferido
+- 📝 Histórico persistente en navegador
+- 📊 Exportación de datos a CSV
+- 📱 Diseño responsive optimizado para móvil y escritorio
+- 📦 Instalación como aplicación (PWA)
 
-🟢 Carga AC
+---
 
-En modo AC, el Renault 5 E-Tech admite un máximo de 11 kW.
+## 🧠 Modelo de cálculo
 
-Por tanto:
+### 🔋 Energía a cargar
 
-Si introduces una potencia menor o igual a 11 kW, se usa esa potencia.
-Si introduces una potencia superior, la app aplica automáticamente el límite de 11 kW.
+La energía necesaria se calcula como:
+
+`kWh a cargar = ((% final - % inicial) / 100) × batería útil`
+
+---
+
+### 🟢 Carga AC
+
+En modo **AC**, el Renault 5 E-Tech está limitado a:
+
+**11 kW**
+
+- Si introduces ≤ 11 kW → se usa esa potencia  
+- Si introduces > 11 kW → se limita automáticamente a 11 kW  
 
 Cálculo del tiempo:
 
-Tiempo = kWh a cargar / potencia efectiva
+`Tiempo = kWh a cargar / potencia efectiva`
 
-🔵 Carga DC
+---
 
-En modo DC, el Renault 5 E-Tech admite un máximo de 100 kW.
+### 🔵 Carga DC
 
-Por tanto:
+En modo **DC**, el Renault 5 E-Tech está limitado a:
 
-Si introduces una potencia menor o igual a 100 kW, se usa esa potencia.
-Si introduces una potencia superior, la app aplica automáticamente el límite de 100 kW.
+**100 kW**
 
-Además, en DC no se usa una potencia constante, sino una curva de carga estimada por tramos de SoC.
+- Si introduces ≤ 100 kW → se usa esa potencia  
+- Si introduces > 100 kW → se limita automáticamente a 100 kW  
 
-Curva estándar utilizada (estimación no oficial)
-SoC	Potencia media
-0–20%	95 kW
-20–40%	85 kW
-40–60%	70 kW
-60–80%	50 kW
-80–90%	35 kW
-90–100%	20 kW
+Además, se aplica una **curva de carga por tramos**, ya que la potencia no es constante.
 
-⚠️ Esta curva es una estimación basada en el comportamiento típico esperado para vehículos eléctricos de este segmento.
-Renault no publica oficialmente la curva detallada completa del Renault 5 E-Tech.
+---
 
-🎨 Interfaz y usabilidad
+### 📊 Curva de carga utilizada (estimación)
 
-La aplicación incluye varias mejoras visuales y de usabilidad:
+| SoC | Potencia |
+|-----|--------:|
+| 0–20% | 95 kW |
+| 20–40% | 85 kW |
+| 40–60% | 70 kW |
+| 60–80% | 50 kW |
+| 80–90% | 35 kW |
+| 90–100% | 20 kW |
 
-Tarjetas independientes para Cargador A y Cargador B
-Identificación rápida mediante:
-badge A/B
-franja superior de color
-Selector de tipo AC/DC integrado en la cabecera de cada tarjeta
-Resultados destacados en cajas separadas:
-Tiempo en azul
-Coste en amarillo
-Resaltado automático del ganador directamente en la tarjeta correspondiente
-Botones de selección manual con color identificativo para cada cargador
-📝 Histórico de cargas
+> ⚠️ Curva estimada basada en comportamiento típico.  
+> Renault no publica la curva oficial completa.
 
-La app permite guardar cargas comparadas en un histórico local del navegador.
+---
 
-Cada registro almacena:
+## 🎨 Interfaz y usabilidad
 
-Fecha y hora
-Cargador elegido
-Tipo de cargador (AC/DC)
-SoC inicial y final
-Energía cargada (kWh)
-Potencia usada
-Tiempo estimado
-Coste
+La aplicación está diseñada para ser clara, rápida y visual:
 
-Funciones disponibles:
+- 🟡🔵 Tarjetas diferenciadas para cada cargador
+- 🅰️🅱️ Badge identificador visible en todo momento
+- 🎛 Selector AC/DC integrado en cabecera
+- 📦 Inputs agrupados y limpios (potencia + precio)
+- 🟦 Tiempo en caja azul
+- 🟨 Coste en caja amarilla
+- 🏆 Resaltado automático del ganador directamente en la tarjeta
+- 🎯 Botones de selección con color por cargador
 
-Guardar carga
-Exportar CSV
-Limpiar histórico
+Resultado:  
+👉 Puedes decidir en segundos sin mirar la tabla inferior.
 
-Los datos se almacenan en localStorage, por lo que permanecen guardados en el dispositivo o navegador hasta que se eliminen manualmente.
+---
 
-📱 Instalación como app
+## 📝 Histórico de cargas
 
-Al ser una PWA, puede instalarse en móvil o escritorio.
+Permite guardar comparaciones reales.
 
-En Android
-Abrir la web en Chrome
-Pulsar Instalar app
-En iPhone / iPad
-Abrir la web en Safari
-Pulsar Compartir
-Seleccionar Añadir a pantalla de inicio
-En escritorio
-En navegadores compatibles, se puede instalar desde la barra de direcciones o desde el menú del navegador.
+Cada registro incluye:
 
-Después de la primera carga, la app puede seguir funcionando offline gracias al Service Worker.
+- 📅 Fecha
+- 🔘 Cargador elegido
+- 🔌 Tipo (AC/DC)
+- 🔋 SoC inicial y final
+- ⚡ Energía cargada (kWh)
+- 🔌 Potencia
+- ⏱ Tiempo
+- 💶 Coste
 
-🛠 Tecnologías utilizadas
-HTML5
-CSS3
-JavaScript vanilla
-Service Worker
-Web App Manifest
-LocalStorage
-GitHub Pages
-🎯 Objetivo del proyecto
+Funciones:
 
-Este proyecto nace como evolución de una hoja Excel inicial, con la idea de convertirla en una herramienta web más práctica y realista.
+- 💾 Guardar carga
+- 📤 Exportar CSV
+- 🧹 Limpiar histórico
 
-Objetivos:
+> Los datos se guardan en `localStorage`.
 
-pasar de un cálculo lineal simple a una simulación más útil
-reflejar mejor el comportamiento real de la carga AC/DC
-disponer de una herramienta siempre accesible
-poder usarla como app instalada en el móvil
-guardar comparativas reales para consulta posterior
-📦 Versiones
-v1.0 → Modelo lineal inicial
-v1.1 → Modelo DC con curva por tramos + límite 100 kW
-v1.2 → Mejoras visuales y estructura responsive
-v1.3 → Histórico local y exportación CSV
-v1.4 → Selección manual del cargador elegido
-v1.5 → Selección explícita AC/DC por cargador + límites automáticos:
-AC limitado a 11 kW
-DC limitado a 100 kW
-v1.6 → Rediseño visual de tarjetas:
-badge A/B
-cabecera compacta
-cajas diferenciadas de tiempo y coste
-resaltado automático del ganador
-botones de elección con color identificativo
-👨‍💻 Autor
+---
 
-Proyecto personal desarrollado por David.
+## 📱 Instalación como app
 
-Administrador de Sistemas e ingeniero informático, con foco en crear herramientas útiles, técnicas y prácticas para el día a día.
+La app es una **PWA**, por lo que se puede instalar.
 
-⚡ Nota final
+### Android
 
-CompaCarga R5 busca ser una herramienta rápida, clara y realista para comparar opciones de carga del Renault 5 E-Tech, manteniendo una experiencia cómoda tanto en móvil como en escritorio.
+- Abrir en Chrome
+- Pulsar **Instalar app**
 
-Renault 5 E-Tech · Ingeniería aplicada a la carga real
+### iPhone
+
+- Abrir en Safari
+- Compartir → **Añadir a pantalla de inicio**
+
+### Escritorio
+
+- Instalable desde navegador compatible
+
+✔ Funciona offline tras la primera carga
+
+---
+
+## 🛠 Tecnologías utilizadas
+
+- HTML5
+- CSS3
+- JavaScript (vanilla)
+- Service Worker
+- Web App Manifest
+- LocalStorage
+- GitHub Pages
+
+---
+
+## 🎯 Objetivo del proyecto
+
+Evolución de una hoja Excel hacia una herramienta real:
+
+- más precisa
+- más visual
+- más rápida
+- accesible desde cualquier dispositivo
+- instalable como app
+- útil en situaciones reales de carga
+
+---
+
+## 📦 Versiones
+
+- **v1.0** → Modelo lineal
+- **v1.1** → Curva DC + límite 100 kW
+- **v1.2** → UI responsive
+- **v1.3** → Histórico + CSV
+- **v1.4** → Selección manual
+- **v1.5** → AC/DC explícito + límites reales
+- **v1.6** → Rediseño visual:
+  - tarjetas mejoradas
+  - resaltado automático
+  - UI más clara y rápida
+
+---
+
+## 👨‍💻 Autor
+
+Proyecto personal desarrollado por **David**  
+Administrador de Sistemas · Ingeniería aplicada
+
+---
+
+## ⚡ Nota final
+
+**CompaCarga R5** convierte cálculos complejos en decisiones simples.
+
+👉 Comparas, eliges y listo.
+
+**Renault 5 E-Tech · Ingeniería aplicada a la carga real**
