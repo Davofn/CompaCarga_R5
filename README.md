@@ -175,7 +175,7 @@ v1.4 → Selección manual del cargador elegido
 v1.5 → Selección explícita AC/DC por cargador + límites automáticos:
 AC limitado a 11 kW
 DC limitado a 100 kW
-v1.6 → Rediseño visual de tarjetas:
+v1.8 → Rediseño visual de tarjetas:
 badge A/B
 cabecera compacta
 cajas diferenciadas de tiempo y coste
