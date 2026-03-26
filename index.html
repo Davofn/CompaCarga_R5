@@ -21,12 +21,10 @@
     </div>
   </header>
 
-
   <section class="hero">
     <div class="hero-inner">
       <div class="hero-copy">
         <h2>Tu comparador, estilo R5</h2>
-        <h3>Rellena potencia y precio de ambos cargadores y te muestro coste y tiempo total</h3>
       </div>
       <img class="hero-car" src="assets/r5.png" alt="Renault 5" />
     </div>
@@ -53,7 +51,6 @@
           <strong id="kwhToCharge">—</strong>
         </div>
       </div>
-      
     </section>
 
     <section class="card">
@@ -63,6 +60,13 @@
         <div class="charger">
           <h3>Cargador A</h3>
           <div class="grid">
+            <label>
+              <span>Tipo</span>
+              <select id="aType">
+                <option value="ac" selected>AC</option>
+                <option value="dc">DC</option>
+              </select>
+            </label>
             <label>
               <span>Potencia (kW)</span>
               <input id="aPower" type="number" min="0" step="0.1" value="11" />
@@ -80,11 +84,22 @@
               <strong id="aTime">—</strong>
             </div>
           </div>
+
+          <p class="limit-note" id="aLimitNote">
+            Se aplicará un máximo de 11 kW por límite del vehículo en AC.
+          </p>
         </div>
 
         <div class="charger">
           <h3>Cargador B</h3>
           <div class="grid">
+            <label>
+              <span>Tipo</span>
+              <select id="bType">
+                <option value="ac">AC</option>
+                <option value="dc" selected>DC</option>
+              </select>
+            </label>
             <label>
               <span>Potencia (kW)</span>
               <input id="bPower" type="number" min="0" step="0.1" value="80" />
@@ -102,6 +117,10 @@
               <strong id="bTime">—</strong>
             </div>
           </div>
+
+          <p class="limit-note" id="bLimitNote">
+            Se aplicará un máximo de 100 kW por límite del vehículo en DC.
+          </p>
         </div>
       </div>
 
@@ -120,34 +139,51 @@
         </div>
       </div>
 
-      <p class="hint">Notas: rellena potencia y precio de cada cargador y mira coste/tiempo.</p>
+      <div class="choice-box">
+        <h3>Elige el cargador que te convence</h3>
+        <div class="choice-group">
+          <button id="chooseA" class="choice-btn active" type="button">Elegir Cargador A</button>
+          <button id="chooseB" class="choice-btn" type="button">Elegir Cargador B</button>
+        </div>
+        <p class="choice-note">
+          Seleccionado: <strong id="selectedChargerLabel">Cargador A</strong>
+        </p>
+      </div>
+
+      <p class="hint">Notas: rellena tipo, potencia y precio de cada cargador y compara coste/tiempo.</p>
     </section>
 
-    
-  
-<section class="card">
-  <h2>Histórico de cargas</h2>
-  <div class="history-actions">
-    <button id="saveCharge">Guardar carga</button>
-    <button id="exportCSV">Exportar CSV</button>
-    <button id="clearHistory">Limpiar histórico</button>
-  </div>
-  <div class="history-wrap">
-    <table id="historyTable" class="history-table">
-      <thead>
-        <tr>
-          <th>Fecha</th><th>%</th><th>kWh</th><th>kW</th><th>Tiempo</th><th>Coste €</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</section>
+    <section class="card">
+      <h2>Histórico de cargas</h2>
 
-</main>
+      <div class="history-actions">
+        <button id="saveCharge" type="button">Guardar carga</button>
+        <button id="exportCSV" type="button">Exportar CSV</button>
+        <button id="clearHistory" type="button">Limpiar histórico</button>
+      </div>
+
+      <div class="history-wrap">
+        <table id="historyTable" class="history-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Elegido</th>
+              <th>Tipo</th>
+              <th>%</th>
+              <th>kWh</th>
+              <th>kW</th>
+              <th>Tiempo</th>
+              <th>Coste €</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
 
   <footer class="footer">
-    <small>v1.5 · Davo y ChatGPT</small>
+    <small>v1.4 · Davo y ChatGPT</small>
   </footer>
 
   <script src="app.js"></script>
