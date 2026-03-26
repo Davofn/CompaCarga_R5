@@ -127,13 +127,13 @@
   
 <section class="card">
   <h2>Histórico de cargas</h2>
-  <div style="display:flex;gap:10px;margin-bottom:10px;">
+  <div class="history-actions">
     <button id="saveCharge">Guardar carga</button>
     <button id="exportCSV">Exportar CSV</button>
     <button id="clearHistory">Limpiar histórico</button>
   </div>
-  <div style="overflow-x:auto;">
-    <table id="historyTable" style="width:100%;font-size:12px;">
+  <div class="history-wrap">
+    <table id="historyTable" class="history-table">
       <thead>
         <tr>
           <th>Fecha</th><th>%</th><th>kWh</th><th>kW</th><th>Tiempo</th><th>Coste €</th>
