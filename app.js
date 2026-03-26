@@ -1,4 +1,3 @@
-// Comparador de cargadores R5
 const $ = (id) => document.getElementById(id);
 
 let selectedCharger = "A";
@@ -53,6 +52,24 @@ function setSelectedCharger(charger){
   }
 }
 
+function updateWinnerHighlight(winnerCost, winnerTime){
+  const cardA = $("chargerCardA");
+  const cardB = $("chargerCardB");
+
+  if (cardA){
+    cardA.classList.remove("is-winner-cost", "is-winner-time");
+  }
+  if (cardB){
+    cardB.classList.remove("is-winner-cost", "is-winner-time");
+  }
+
+  if (winnerCost === "Cargador A" && cardA) cardA.classList.add("is-winner-cost");
+  if (winnerCost === "Cargador B" && cardB) cardB.classList.add("is-winner-cost");
+
+  if (winnerTime === "Cargador A" && cardA) cardA.classList.add("is-winner-time");
+  if (winnerTime === "Cargador B" && cardB) cardB.classList.add("is-winner-time");
+}
+
 function getLimitNote(type, power){
   const requestedPower = Number.isFinite(power) ? power : 0;
 
@@ -71,27 +88,32 @@ function getLimitNote(type, power){
 }
 
 function compute(){
-  const battery = Math.max(0, parseFloat($("batteryKwh").value));
-  const socStart = clamp(parseFloat($("socStart").value), 0, 100);
-  const socEnd = clamp(parseFloat($("socEnd").value), 0, 100);
+  const batteryEl = $("batteryKwh");
+  const socStartEl = $("socStart");
+  const socEndEl = $("socEnd");
+  const kwhToChargeEl = $("kwhToCharge");
 
-  $("socStart").value = socStart;
-  $("socEnd").value = socEnd;
+  if (!batteryEl || !socStartEl || !socEndEl || !kwhToChargeEl) return;
+
+  const battery = Math.max(0, parseFloat(batteryEl.value));
+  const socStart = clamp(parseFloat(socStartEl.value), 0, 100);
+  const socEnd = clamp(parseFloat(socEndEl.value), 0, 100);
+
+  socStartEl.value = socStart;
+  socEndEl.value = socEnd;
 
   const deltaSoc = (socEnd - socStart) / 100;
   const kwhToCharge = Math.max(0, deltaSoc * battery);
-  $("kwhToCharge").textContent = fmtKwh(kwhToCharge);
+  kwhToChargeEl.textContent = fmtKwh(kwhToCharge);
 
   function calculateTime(power, type, start, end){
     if (power <= 0) return NaN;
 
-    // AC: límite 11 kW
     if (type === "ac"){
       const maxPower = Math.min(power, 11);
       return (kwhToCharge / maxPower) * 3600;
     }
 
-    // DC: límite 100 kW + curva
     const maxPower = Math.min(power, 100);
 
     const curve = [
@@ -120,29 +142,43 @@ function compute(){
     return totalSeconds;
   }
 
-  // Cargador A
-  const aType = $("aType").value;
-  const aPower = Math.max(0, parseFloat($("aPower").value));
-  const aPrice = Math.max(0, parseFloat($("aPrice").value));
+  const aTypeEl = $("aType");
+  const aPowerEl = $("aPower");
+  const aPriceEl = $("aPrice");
+  const aCostEl = $("aCost");
+  const aTimeEl = $("aTime");
+  const aLimitNoteEl = $("aLimitNote");
+
+  const bTypeEl = $("bType");
+  const bPowerEl = $("bPower");
+  const bPriceEl = $("bPrice");
+  const bCostEl = $("bCost");
+  const bTimeEl = $("bTime");
+  const bLimitNoteEl = $("bLimitNote");
+
+  if (!aTypeEl || !aPowerEl || !aPriceEl || !aCostEl || !aTimeEl || !aLimitNoteEl) return;
+  if (!bTypeEl || !bPowerEl || !bPriceEl || !bCostEl || !bTimeEl || !bLimitNoteEl) return;
+
+  const aType = aTypeEl.value;
+  const aPower = Math.max(0, parseFloat(aPowerEl.value));
+  const aPrice = Math.max(0, parseFloat(aPriceEl.value));
   const aCost = kwhToCharge * aPrice;
   const aTimeSec = calculateTime(aPower, aType, socStart, socEnd);
 
-  $("aCost").textContent = fmtEUR(aCost);
-  $("aTime").textContent = secondsToHMS(aTimeSec);
-  $("aLimitNote").textContent = getLimitNote(aType, aPower);
+  aCostEl.textContent = fmtEUR(aCost);
+  aTimeEl.textContent = secondsToHMS(aTimeSec);
+  aLimitNoteEl.textContent = getLimitNote(aType, aPower);
 
-  // Cargador B
-  const bType = $("bType").value;
-  const bPower = Math.max(0, parseFloat($("bPower").value));
-  const bPrice = Math.max(0, parseFloat($("bPrice").value));
+  const bType = bTypeEl.value;
+  const bPower = Math.max(0, parseFloat(bPowerEl.value));
+  const bPrice = Math.max(0, parseFloat(bPriceEl.value));
   const bCost = kwhToCharge * bPrice;
   const bTimeSec = calculateTime(bPower, bType, socStart, socEnd);
 
-  $("bCost").textContent = fmtEUR(bCost);
-  $("bTime").textContent = secondsToHMS(bTimeSec);
-  $("bLimitNote").textContent = getLimitNote(bType, bPower);
+  bCostEl.textContent = fmtEUR(bCost);
+  bTimeEl.textContent = secondsToHMS(bTimeSec);
+  bLimitNoteEl.textContent = getLimitNote(bType, bPower);
 
-  // Ganadores
   let winnerCost = "—";
   if (Number.isFinite(aCost) && Number.isFinite(bCost)){
     if (Math.abs(aCost - bCost) < 1e-9) winnerCost = "Empate";
@@ -155,11 +191,17 @@ function compute(){
     else winnerTime = aTimeSec < bTimeSec ? "Cargador A" : "Cargador B";
   }
 
-  $("winnerCost").textContent = winnerCost;
-  $("winnerTime").textContent = winnerTime;
+  const winnerCostEl = $("winnerCost");
+  const winnerTimeEl = $("winnerTime");
+  const diffCostEl = $("diffCost");
+
+  if (winnerCostEl) winnerCostEl.textContent = winnerCost;
+  if (winnerTimeEl) winnerTimeEl.textContent = winnerTime;
 
   const diff = bCost - aCost;
-  $("diffCost").textContent = Number.isFinite(diff) ? fmtEUR(diff) : "—";
+  if (diffCostEl) diffCostEl.textContent = Number.isFinite(diff) ? fmtEUR(diff) : "—";
+
+  updateWinnerHighlight(winnerCost, winnerTime);
 }
 
 function wire(){
@@ -202,7 +244,7 @@ function wire(){
   compute();
 }
 
-// ===== Histórico =====
+/* Histórico */
 function getHistory(){
   return JSON.parse(localStorage.getItem("compacarga_r5_history") || "[]");
 }
@@ -212,18 +254,18 @@ function saveHistory(data){
 }
 
 function getSelectedData(){
-  const battery = Math.max(0, parseFloat($("batteryKwh").value));
-  const socStart = clamp(parseFloat($("socStart").value), 0, 100);
-  const socEnd = clamp(parseFloat($("socEnd").value), 0, 100);
+  const battery = Math.max(0, parseFloat($("batteryKwh")?.value || 0));
+  const socStart = clamp(parseFloat($("socStart")?.value || 0), 0, 100);
+  const socEnd = clamp(parseFloat($("socEnd")?.value || 0), 0, 100);
   const kWh = Math.max(0, ((socEnd - socStart) / 100) * battery);
 
   if (selectedCharger === "A"){
     return {
       elegido: "Cargador A",
-      tipo: $("aType").value.toUpperCase(),
-      potencia: Math.max(0, parseFloat($("aPower").value)),
-      tiempo: $("aTime").textContent,
-      coste: kWh * Math.max(0, parseFloat($("aPrice").value)),
+      tipo: ($("aType")?.value || "").toUpperCase(),
+      potencia: Math.max(0, parseFloat($("aPower")?.value || 0)),
+      tiempo: $("aTime")?.textContent || "—",
+      coste: kWh * Math.max(0, parseFloat($("aPrice")?.value || 0)),
       socInicio: socStart,
       socFinal: socEnd,
       kWh
@@ -232,10 +274,10 @@ function getSelectedData(){
 
   return {
     elegido: "Cargador B",
-    tipo: $("bType").value.toUpperCase(),
-    potencia: Math.max(0, parseFloat($("bPower").value)),
-    tiempo: $("bTime").textContent,
-    coste: kWh * Math.max(0, parseFloat($("bPrice").value)),
+    tipo: ($("bType")?.value || "").toUpperCase(),
+    potencia: Math.max(0, parseFloat($("bPower")?.value || 0)),
+    tiempo: $("bTime")?.textContent || "—",
+    coste: kWh * Math.max(0, parseFloat($("bPrice")?.value || 0)),
     socInicio: socStart,
     socFinal: socEnd,
     kWh
@@ -258,7 +300,7 @@ function renderHistory(){
       <td>${Number(e.kWh).toFixed(2)}</td>
       <td>${e.potencia}</td>
       <td>${e.tiempo}</td>
-      <td>${Number(e.coste).toFixed(2)}</td>
+      <td>${fmtEUR(Number(e.coste))}</td>
     `;
     tbody.appendChild(tr);
   });
