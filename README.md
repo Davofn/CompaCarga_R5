@@ -1,84 +1,72 @@
-# ⚡ CompaCarga R5
+⚡ CompaCarga R5
 
-Calculadora avanzada de coste y tiempo de carga para el **Renault 5 E-Tech (52 kWh)**.
+Calculadora avanzada de coste y tiempo de carga para el Renault 5 E-Tech (52 kWh).
 
-Disponible online en:  
+Disponible online en:
 👉 https://davofn.github.io/CompaCarga_R5/
 
----
+🚗 ¿Qué es?
 
-## 🚗 ¿Qué es?
-
-**CompaCarga R5** es una **Progressive Web App (PWA)** diseñada para comparar de forma rápida y realista dos cargadores distintos para el Renault 5 E-Tech.
+CompaCarga R5 es una Progressive Web App (PWA) diseñada para comparar de forma rápida y realista dos cargadores distintos para el Renault 5 E-Tech.
 
 Permite comparar:
 
-- 🔌 **Dos cargadores distintos**, configurables como **AC o DC**
-- 💶 **Coste total** de la carga
-- ⏱ **Tiempo estimado** de carga
-- 🏆 **Ganador por coste**
-- 🏁 **Ganador por tiempo**
-- ✅ **Selección manual** del cargador que finalmente eliges
-- 📝 **Histórico de cargas guardadas**
-- 📤 **Exportación a CSV**
+🔌 Dos cargadores distintos, configurables como AC o DC
+💶 Coste total de la carga
+⏱ Tiempo estimado de carga
+🏆 Ganador por coste
+🏁 Ganador por tiempo
+✅ Selección manual del cargador que finalmente eliges
+📝 Histórico de cargas guardadas
+📤 Exportación a CSV
 
-Está pensada específicamente para el **Renault 5 E-Tech 52 kWh**, con una lógica de cálculo adaptada a sus límites de carga.
+Está pensada específicamente para el Renault 5 E-Tech 52 kWh, con una lógica de cálculo adaptada a sus límites de carga.
 
----
-
-## ✨ Funcionalidades principales
-
-- Comparación entre **Cargador A** y **Cargador B**
-- Selección explícita del tipo de cargador:
-  - **AC**
-  - **DC**
-- Aplicación automática de límites según el tipo:
-  - **AC → máximo 11 kW**
-  - **DC → máximo 100 kW**
-- Mensaje informativo en pantalla indicando las restricciones aplicadas
-- Resaltado visual del ganador por:
-  - **coste**
-  - **tiempo**
-- Elección manual del cargador preferido
-- Guardado en histórico del cargador seleccionado
-- Exportación del histórico en formato **CSV**
-- Diseño responsive para **móvil y escritorio**
-- Instalación como app gracias a PWA
-
----
-
-## 🧠 Modelo de cálculo
-
-### 🔋 Energía a cargar
+✨ Funcionalidades principales
+Comparación entre Cargador A y Cargador B
+Selección explícita del tipo de cargador:
+AC
+DC
+Aplicación automática de límites según el tipo:
+AC → máximo 11 kW
+DC → máximo 100 kW
+Mensaje informativo en pantalla indicando las restricciones aplicadas
+Resaltado visual del ganador por:
+coste
+tiempo
+Elección manual del cargador preferido
+Guardado en histórico del cargador seleccionado
+Exportación del histórico en formato CSV
+Diseño responsive para móvil y escritorio
+Instalación como app gracias a PWA
+🧠 Modelo de cálculo
+🔋 Energía a cargar
 
 La energía a cargar se calcula así:
 
-text
 kWh a cargar = ((% final - % inicial) / 100) × batería útil
+
 🟢 Carga AC
 
-En modo AC, el Renault 5 E-Tech admite un máximo de:
-
-11 kW
+En modo AC, el Renault 5 E-Tech admite un máximo de 11 kW.
 
 Por tanto:
 
-Si introduces una potencia menor o igual a 11 kW, se usa esa potencia
-Si introduces una potencia superior, la app aplica automáticamente el límite de 11 kW
+Si introduces una potencia menor o igual a 11 kW, se usa esa potencia.
+Si introduces una potencia superior, la app aplica automáticamente el límite de 11 kW.
 
 Cálculo del tiempo:
 
 Tiempo = kWh a cargar / potencia efectiva
+
 🔵 Carga DC
 
-En modo DC, el Renault 5 E-Tech admite un máximo de:
-
-100 kW
+En modo DC, el Renault 5 E-Tech admite un máximo de 100 kW.
 
 Por tanto:
 
-Si introduces una potencia menor o igual a 100 kW, se usa esa potencia
-Si introduces una potencia superior, la app aplica automáticamente el límite de 100 kW
+Si introduces una potencia menor o igual a 100 kW, se usa esa potencia.
+Si introduces una potencia superior, la app aplica automáticamente el límite de 100 kW.
 
 Además, en DC no se usa una potencia constante, sino una curva de carga estimada por tramos de SoC.
 
@@ -129,7 +117,7 @@ Guardar carga
 Exportar CSV
 Limpiar histórico
 
-Los datos se almacenan en localStorage, por lo que permanecen guardados en el dispositivo/navegador hasta que se eliminen manualmente.
+Los datos se almacenan en localStorage, por lo que permanecen guardados en el dispositivo o navegador hasta que se eliminen manualmente.
 
 📱 Instalación como app
 
@@ -137,13 +125,13 @@ Al ser una PWA, puede instalarse en móvil o escritorio.
 
 En Android
 Abrir la web en Chrome
-Pulsar “Instalar app”
+Pulsar Instalar app
 En iPhone / iPad
 Abrir la web en Safari
-Pulsar “Compartir”
-Seleccionar “Añadir a pantalla de inicio”
+Pulsar Compartir
+Seleccionar Añadir a pantalla de inicio
 En escritorio
-En navegadores compatibles, se puede instalar desde la barra de direcciones o desde el menú del navegador
+En navegadores compatibles, se puede instalar desde la barra de direcciones o desde el menú del navegador.
 
 Después de la primera carga, la app puede seguir funcionando offline gracias al Service Worker.
 
@@ -175,7 +163,7 @@ v1.4 → Selección manual del cargador elegido
 v1.5 → Selección explícita AC/DC por cargador + límites automáticos:
 AC limitado a 11 kW
 DC limitado a 100 kW
-v1.8 → Rediseño visual de tarjetas:
+v1.6 → Rediseño visual de tarjetas:
 badge A/B
 cabecera compacta
 cajas diferenciadas de tiempo y coste
