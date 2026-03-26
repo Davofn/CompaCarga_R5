@@ -53,7 +53,7 @@ Está pensada específicamente para el **Renault 5 E-Tech 52 kWh**, con una lóg
 
 La energía a cargar se calcula así:
 
-```text
+text
 kWh a cargar = ((% final - % inicial) / 100) × batería útil
 🟢 Carga AC
 
