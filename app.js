@@ -86,7 +86,7 @@ function compute(){
     // 🟢 AC
     return (kwhToCharge / power) * 3600;
   }
-
+  let selectedCharger = "A";
   // Charger A
   const aPower = Math.max(0, parseFloat($("aPower").value));
   const aPrice = Math.max(0, parseFloat($("aPrice").value));
@@ -129,7 +129,63 @@ function wire(){
   ids.forEach(id => $(id).addEventListener("input", compute));
   compute();
 }
+function setSelectedCharger(charger){
+  selectedCharger = charger;
 
+  const btnA = $("chooseA");
+  const btnB = $("chooseB");
+  const label = $("selectedChargerLabel");
+
+  if (btnA) btnA.classList.remove("active");
+  if (btnB) btnB.classList.remove("active");
+
+  if (charger === "A" && btnA) btnA.classList.add("active");
+  if (charger === "B" && btnB) btnB.classList.add("active");
+
+  if (label){
+    label.textContent = charger === "A" ? "Cargador A" : "Cargador B";
+  }
+}
+
+function wire(){
+  const ids = [
+    "batteryKwh",
+    "socStart",
+    "socEnd",
+    "aType",
+    "aPower",
+    "aPrice",
+    "bType",
+    "bPower",
+    "bPrice"
+  ];
+
+  ids.forEach((id) => {
+    const el = $(id);
+    if (!el) return;
+    el.addEventListener("input", compute);
+    el.addEventListener("change", compute);
+  });
+
+  const btnA = $("chooseA");
+  const btnB = $("chooseB");
+
+  if (btnA){
+    btnA.addEventListener("click", function(e){
+      e.preventDefault();
+      setSelectedCharger("A");
+    });
+  }
+
+  if (btnB){
+    btnB.addEventListener("click", function(e){
+      e.preventDefault();
+      setSelectedCharger("B");
+    });
+  }
+
+  compute();
+}
 // PWA install (optional nice-to-have UI hook)
 window.addEventListener("load", () => {
   wire();
@@ -170,22 +226,16 @@ function exportCSV(){
   URL.revokeObjectURL(url);
 }
 
-document.addEventListener("DOMContentLoaded",()=>{
+window.addEventListener("DOMContentLoaded", () => {
+  wire();
+  setSelectedCharger("A");
   renderHistory();
-  document.getElementById("saveCharge")?.addEventListener("click",()=>{
-    const battery=parseFloat(document.getElementById("batteryKwh").value);
-    const socStart=parseFloat(document.getElementById("socStart").value);
-    const socEnd=parseFloat(document.getElementById("socEnd").value);
-    const kWh=((socEnd-socStart)/100)*battery;
-    const power=parseFloat(document.getElementById("aPower").value);
-    const price=parseFloat(document.getElementById("aPrice").value);
-    const cost=kWh*price;
-    const tiempo=document.getElementById("aTime").textContent;
-    const h=getHistory();
-    h.push({fecha:new Date().toLocaleString(),socInicio:socStart,
-      socFinal:socEnd,kWh:kWh,potencia:power,tiempo:tiempo,coste:cost});
-    saveHistory(h);renderHistory();
-  });
+  initHistoryActions();
+
+  if ("serviceWorker" in navigator){
+    navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+  }
+});
   document.getElementById("clearHistory")?.addEventListener("click",()=>{
     localStorage.removeItem("compacarga_r5_history");renderHistory();
   });
