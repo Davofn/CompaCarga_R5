@@ -117,12 +117,15 @@ function compute(){
     const maxPower = Math.min(power, 100);
 
     const curve = [
-      { min: 0,  max: 20,  kw: 95 },
-      { min: 20, max: 40,  kw: 85 },
-      { min: 40, max: 60,  kw: 70 },
-      { min: 60, max: 80,  kw: 50 },
-      { min: 80, max: 90,  kw: 35 },
-      { min: 90, max: 100, kw: 20 }
+     { min: 0,   max: 10,  kw: 60 },
+    { min: 10,  max: 13,  kw: 85 },
+    { min: 13,  max: 42,  kw: 100 },
+    { min: 42,  max: 55,  kw: 78 },
+    { min: 55,  max: 70,  kw: 63 },
+    { min: 70,  max: 80,  kw: 48 },
+    { min: 80,  max: 90,  kw: 28 },
+    { min: 90,  max: 96,  kw: 16 },
+    { min: 96,  max: 100, kw: 10 }
     ];
 
     let totalSeconds = 0;
