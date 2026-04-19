@@ -2,7 +2,7 @@ const { createClient } = window.supabase;
 
 const SUPABASE_URL = "https://fzsioxqmpjmunaszrjdl.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6c2lveHFtcGptdW5hc3pyamRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMjgwNTEsImV4cCI6MjA4ODkwNDA1MX0.-ZUFna_TyVBNAUfgRqaJGn0siq-DIiHcCgK5h1uf6jY";
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const $ = (id) => document.getElementById(id);
 
@@ -74,7 +74,7 @@ function showToast(msg, isError = false) {
 /* ── Supabase ── */
 
 async function fetchHistory() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("charges")
     .select("*")
     .order("created_at", { ascending: false });
@@ -87,7 +87,7 @@ async function fetchHistory() {
 }
 
 async function insertCharge(entry) {
-  const { error } = await supabase.from("charges").insert([{
+  const { error } = await supabaseClient.from("charges").insert([{
     fecha:      entry.fecha,
     brand_id:   entry.brandId,
     brand_name: entry.brandName,
@@ -105,12 +105,12 @@ async function insertCharge(entry) {
 }
 
 async function deleteCharge(id) {
-  const { error } = await supabase.from("charges").delete().eq("id", id);
+  const { error } = await supabaseClient.from("charges").delete().eq("id", id);
   if (error) throw error;
 }
 
 async function deleteAllCharges() {
-  const { error } = await supabase.from("charges").delete().not("id", "is", null);
+  const { error } = await supabaseClient.from("charges").delete().not("id", "is", null);
   if (error) throw error;
 }
 
