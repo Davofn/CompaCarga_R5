@@ -187,37 +187,60 @@ input::placeholder{color:#8f99aa;}
 
 /* ── Brand selector ── */
 .brand-selector-row{
-  margin-top:16px; padding-top:16px;
-  border-top:1px solid rgba(255,255,255,.08);
-  display:grid;
-  grid-template-columns: auto 1fr;
+  margin-top:12px;
+  padding:14px 16px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.02);
+  display:flex;
   align-items:center;
-  gap:14px;
+  gap:12px;
+  flex-wrap:nowrap;
 }
 .brand-selector-label span{
-  display:block; font-size:12px; color:var(--muted);
-  text-transform:uppercase; letter-spacing:.08em; white-space:nowrap;
+  font-size:12px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  white-space:nowrap;
+  flex:0 0 auto;
 }
-.brand-selector-inner{display:flex;align-items:center;gap:10px;min-width:0;}
+.brand-selector-inner{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex:1 1 0;
+  min-width:0;
+}
 .brand-select{
-  flex:1 1 0; min-width:0;
-  font-size:14px; padding:10px 12px;
+  flex:1 1 0;
+  min-width:0;
+  font-size:14px;
+  padding:10px 12px;
 }
 .brand-preview{
-  display:flex; align-items:center; gap:8px;
-  font-size:13px; color:var(--muted); flex-shrink:0;
+  display:flex;
+  align-items:center;
+  flex-shrink:0;
 }
 .brand-logo-preview{
-  width:28px; height:28px; object-fit:contain;
+  width:28px;
+  height:28px;
+  object-fit:contain;
   border-radius:6px;
   background:rgba(255,255,255,.10);
   padding:3px;
   flex:0 0 auto;
 }
 .brand-logo-fallback{
-  display:inline-flex; align-items:center; justify-content:center;
-  width:28px; height:28px; border-radius:6px;
-  background:rgba(255,212,0,.15); font-size:14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  height:28px;
+  border-radius:6px;
+  background:rgba(255,212,0,.15);
+  font-size:14px;
   flex:0 0 auto;
 }
 
@@ -322,6 +345,7 @@ button:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(255,212,0,.18), var(
   .comparison-footer{align-items:flex-start;}
   .choice-group{width:100%;}
   .choice-btn{flex:1 1 0;}
-  .brand-selector-row{grid-template-columns:1fr;gap:8px;}
+  .brand-selector-row{flex-wrap:wrap; gap:8px;}
+  .brand-selector-label span{width:100%;}
   .brand-selector-inner{width:100%;}
 }
