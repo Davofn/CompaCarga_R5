@@ -1,3 +1,9 @@
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const SUPABASE_URL = "https://fzsioxqmpjmunaszrjdl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_lPgxna3-91FskASGGI854g_RZndEz2S";
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const $ = (id) => document.getElementById(id);
 
 let selectedCharger = "A";
@@ -50,7 +56,7 @@ function secondsToHMS(totalSeconds){
   return `${pad(h)}:${pad(m)}:${pad(sec)}`;
 }
 
-function showToast(msg) {
+function showToast(msg, isError = false) {
   let toast = $("toast");
   if (!toast) {
     toast = document.createElement("div");
@@ -58,10 +64,57 @@ function showToast(msg) {
     document.body.appendChild(toast);
   }
   toast.textContent = msg;
+  toast.classList.remove("toast-visible", "toast-error");
   toast.classList.add("toast-visible");
+  if (isError) toast.classList.add("toast-error");
   clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => toast.classList.remove("toast-visible"), 2400);
+  toast._timer = setTimeout(() => toast.classList.remove("toast-visible"), 2800);
 }
+
+/* ── Supabase ── */
+
+async function fetchHistory() {
+  const { data, error } = await supabase
+    .from("charges")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error cargando histórico:", error);
+    return [];
+  }
+  return data || [];
+}
+
+async function insertCharge(entry) {
+  const { error } = await supabase.from("charges").insert([{
+    fecha:      entry.fecha,
+    brand_id:   entry.brandId,
+    brand_name: entry.brandName,
+    brand_logo: entry.brandLogo,
+    tipo:       entry.tipo,
+    soc_inicio: entry.socInicio,
+    soc_final:  entry.socFinal,
+    kwh:        entry.kWh,
+    potencia:   entry.potencia,
+    precio:     entry.precio,
+    tiempo:     entry.tiempo,
+    coste:      entry.coste
+  }]);
+  if (error) throw error;
+}
+
+async function deleteCharge(id) {
+  const { error } = await supabase.from("charges").delete().eq("id", id);
+  if (error) throw error;
+}
+
+async function deleteAllCharges() {
+  const { error } = await supabase.from("charges").delete().not("id", "is", null);
+  if (error) throw error;
+}
+
+/* ── UI ── */
 
 function setSelectedCharger(charger){
   selectedCharger = charger;
@@ -76,9 +129,7 @@ function setSelectedCharger(charger){
   if (charger === "A" && btnA) btnA.classList.add("active");
   if (charger === "B" && btnB) btnB.classList.add("active");
 
-  if (label){
-    label.textContent = charger === "A" ? "Cargador A" : "Cargador B";
-  }
+  if (label) label.textContent = charger === "A" ? "Cargador A" : "Cargador B";
 
   updateBrandPreview();
 }
@@ -256,15 +307,6 @@ function wire(){
   compute();
 }
 
-/* Histórico */
-function getHistory(){
-  return JSON.parse(localStorage.getItem("compacarga_r5_history") || "[]");
-}
-
-function saveHistory(data){
-  localStorage.setItem("compacarga_r5_history", JSON.stringify(data));
-}
-
 function getSelectedData(){
   const battery = Math.max(0, parseFloat($("batteryKwh")?.value || 0));
   const socStart = clamp(parseFloat($("socStart")?.value || 0), 0, 100);
@@ -308,65 +350,61 @@ function getSelectedData(){
   };
 }
 
-function deleteHistoryEntry(index) {
-  const history = getHistory();
-  history.splice(index, 1);
-  saveHistory(history);
-  renderHistory();
-}
-
-function renderHistory(){
+function renderHistory(rows){
   const tbody = document.querySelector("#historyTable tbody");
   if (!tbody) return;
   tbody.innerHTML = "";
 
-  const history = getHistory(); // ya guardado en orden desc (push + reverse al renderizar)
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:20px">No hay cargas guardadas aún.</td></tr>`;
+    return;
+  }
 
-  // Mostrar más reciente primero
-  [...history].reverse().forEach((e, visualIndex) => {
-    const realIndex = history.length - 1 - visualIndex;
+  rows.forEach((e) => {
     const tr = document.createElement("tr");
-
     const tipoColor = (e.tipo || "").toUpperCase() === "DC" ? "badge-tipo dc" : "badge-tipo ac";
     const tipoLabel = (e.tipo || "").toUpperCase() || "—";
 
-    const logoHtml = e.brandLogo
-      ? `<span class="history-brand-wrap"><img src="${e.brandLogo}" alt="${e.brandName}" class="history-brand-logo" onerror="this.parentElement.innerHTML='<span class=\\'history-brand-fallback\\'>⚡</span>'"></span>`
+    const logoHtml = e.brand_logo
+      ? `<span class="history-brand-wrap"><img src="${e.brand_logo}" alt="${e.brand_name}" class="history-brand-logo" onerror="this.parentElement.innerHTML='<span class=\\'history-brand-fallback\\'>⚡</span>'"></span>`
       : `<span class="history-brand-fallback">⚡</span>`;
 
     tr.innerHTML = `
       <td>${e.fecha}</td>
-      <td class="td-brand"><div class="td-brand-inner">${logoHtml}<span>${e.brandName || e.elegido}</span></div></td>
+      <td class="td-brand"><div class="td-brand-inner">${logoHtml}<span>${e.brand_name || "—"}</span></div></td>
       <td><span class="${tipoColor}">${tipoLabel}</span></td>
-      <td>${e.socInicio}–${e.socFinal}%</td>
-      <td>${Number(e.kWh).toFixed(2)}</td>
+      <td>${e.soc_inicio}–${e.soc_final}%</td>
+      <td>${Number(e.kwh).toFixed(2)}</td>
       <td>${e.potencia} kW</td>
       <td>${e.tiempo}</td>
       <td>${e.precio != null ? Number(e.precio).toFixed(3) + " €" : "—"}</td>
       <td>${fmtEUR(Number(e.coste))}</td>
-      <td><button class="btn-delete" title="Eliminar" data-index="${realIndex}">✕</button></td>
+      <td><button class="btn-delete" title="Eliminar" data-id="${e.id}">✕</button></td>
     `;
     tbody.appendChild(tr);
   });
 
-  // Delegación de eventos para botones de borrar
   tbody.querySelectorAll(".btn-delete").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const idx = parseInt(btn.dataset.index, 10);
-      deleteHistoryEntry(idx);
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.id;
+      try {
+        await deleteCharge(id);
+        const rows = await fetchHistory();
+        renderHistory(rows);
+        showToast("✓ Registro eliminado");
+      } catch {
+        showToast("✗ Error al eliminar", true);
+      }
     });
   });
 }
 
-function exportCSV(){
-  const history = getHistory();
-  if (!history.length) return;
-
+function exportCSV(rows){
+  if (!rows.length) return;
   let csv = "Fecha,Marca,Tipo,SOC Inicio,SOC Final,kWh,Potencia de carga (kW),Tiempo,€/kWh,Coste\n";
-  history.forEach((e) => {
-    csv += `${e.fecha},${e.brandName || e.elegido},${e.tipo},${e.socInicio},${e.socFinal},${Number(e.kWh).toFixed(2)},${e.potencia},${e.tiempo},${e.precio != null ? Number(e.precio).toFixed(3) : ""},${Number(e.coste).toFixed(2)}\n`;
+  rows.forEach((e) => {
+    csv += `${e.fecha},${e.brand_name || ""},${e.tipo},${e.soc_inicio},${e.soc_final},${Number(e.kwh).toFixed(2)},${e.potencia},${e.tiempo},${e.precio != null ? Number(e.precio).toFixed(3) : ""},${Number(e.coste).toFixed(2)}\n`;
   });
-
   const blob = new Blob([csv], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -377,36 +415,46 @@ function exportCSV(){
 }
 
 function initHistoryActions(){
-  $("saveCharge")?.addEventListener("click", () => {
+  $("saveCharge")?.addEventListener("click", async () => {
     const data = getSelectedData();
-    const history = getHistory();
-    history.push({
-      fecha: new Date().toLocaleString(),
-      elegido: data.elegido,
-      brandId: data.brandId,
-      brandName: data.brandName,
-      brandLogo: data.brandLogo,
-      tipo: data.tipo,
-      socInicio: data.socInicio,
-      socFinal: data.socFinal,
-      kWh: data.kWh,
-      potencia: data.potencia,
-      precio: data.precio,
-      tiempo: data.tiempo,
-      coste: data.coste
-    });
-    saveHistory(history);
-    renderHistory();
-    showToast("✓ Carga guardada");
+    try {
+      await insertCharge({
+        fecha:     new Date().toLocaleString(),
+        brandId:   data.brandId,
+        brandName: data.brandName,
+        brandLogo: data.brandLogo,
+        tipo:      data.tipo,
+        socInicio: data.socInicio,
+        socFinal:  data.socFinal,
+        kWh:       data.kWh,
+        potencia:  data.potencia,
+        precio:    data.precio,
+        tiempo:    data.tiempo,
+        coste:     data.coste
+      });
+      const rows = await fetchHistory();
+      renderHistory(rows);
+      showToast("✓ Carga guardada");
+    } catch {
+      showToast("✗ Error al guardar", true);
+    }
   });
 
-  $("clearHistory")?.addEventListener("click", () => {
+  $("clearHistory")?.addEventListener("click", async () => {
     if (!confirm("¿Limpiar todo el histórico?")) return;
-    localStorage.removeItem("compacarga_r5_history");
-    renderHistory();
+    try {
+      await deleteAllCharges();
+      renderHistory([]);
+      showToast("✓ Histórico limpiado");
+    } catch {
+      showToast("✗ Error al limpiar", true);
+    }
   });
 
-  $("exportCSV")?.addEventListener("click", exportCSV);
+  $("exportCSV")?.addEventListener("click", async () => {
+    const rows = await fetchHistory();
+    exportCSV(rows);
+  });
 }
 
 function buildBrandSelect() {
@@ -421,12 +469,18 @@ function buildBrandSelect() {
   });
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
   buildBrandSelect();
   setSelectedCharger("A");
   wire();
-  renderHistory();
   initHistoryActions();
+
+  try {
+    const rows = await fetchHistory();
+    renderHistory(rows);
+  } catch {
+    showToast("✗ Error al cargar el histórico", true);
+  }
 
   if ("serviceWorker" in navigator){
     navigator.serviceWorker.register("./service-worker.js").catch(() => {});
