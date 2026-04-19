@@ -4,14 +4,14 @@ let selectedCharger = "A";
 
 const BRANDS = [
   { id: "otro",      name: "Otro / Desconocido", logo: null },
-  { id: "tesla",     name: "Tesla Supercharger",  logo: "https://logo.clearbit.com/tesla.com" },
-  { id: "zunder",    name: "Zunder",              logo: "https://logo.clearbit.com/zunder.com" },
-  { id: "repsol",    name: "Repsol",              logo: "https://logo.clearbit.com/repsol.com" },
-  { id: "ionity",    name: "Ionity",              logo: "https://logo.clearbit.com/ionity.eu" },
-  { id: "iberdrola", name: "Iberdrola",           logo: "https://logo.clearbit.com/iberdrola.es" },
-  { id: "wenea",     name: "Wenea",               logo: "https://logo.clearbit.com/wenea.com" },
-  { id: "powerdot",  name: "PowerDot",            logo: "https://logo.clearbit.com/powerdot.com" },
-  { id: "endesa",    name: "Endesa",              logo: "https://logo.clearbit.com/endesa.com" },
+  { id: "tesla",     name: "Tesla Supercharger",  logo: "https://www.tesla.com/favicon.ico" },
+  { id: "zunder",    name: "Zunder",              logo: "https://zunder.com/favicon.ico" },
+  { id: "repsol",    name: "Repsol",              logo: "https://www.repsol.com/favicon.ico" },
+  { id: "ionity",    name: "Ionity",              logo: "https://ionity.eu/favicon.ico" },
+  { id: "iberdrola", name: "Iberdrola",           logo: "https://www.iberdrola.es/favicon.ico" },
+  { id: "wenea",     name: "Wenea",               logo: "https://wenea.com/favicon.ico" },
+  { id: "powerdot",  name: "PowerDot",            logo: "https://www.powerdot.com/favicon.ico" },
+  { id: "endesa",    name: "Endesa",              logo: "https://www.endesa.com/favicon.ico" },
 ];
 
 function getBrand(id) {
@@ -88,9 +88,9 @@ function updateBrandPreview() {
 
   const brand = getBrand(select.value);
   if (brand.logo) {
-    preview.innerHTML = `<img src="${brand.logo}" alt="${brand.name}" class="brand-logo-preview" onerror="this.style.display='none'"><span>${brand.name}</span>`;
+    preview.innerHTML = `<img src="${brand.logo}" alt="${brand.name}" class="brand-logo-preview" onerror="this.outerHTML='<span class=\\'brand-logo-fallback\\'>⚡</span>'">`;
   } else {
-    preview.innerHTML = `<span>${brand.name}</span>`;
+    preview.innerHTML = `<span class="brand-logo-fallback">⚡</span>`;
   }
 }
 
@@ -329,8 +329,8 @@ function renderHistory(){
     const tipoLabel = (e.tipo || "").toUpperCase() || "—";
 
     const logoHtml = e.brandLogo
-      ? `<img src="${e.brandLogo}" alt="${e.brandName}" class="history-brand-logo" onerror="this.style.display='none'">`
-      : "";
+      ? `<img src="${e.brandLogo}" alt="${e.brandName}" class="history-brand-logo" onerror="this.outerHTML='<span class=\\'history-brand-fallback\\'>⚡</span>'">`
+      : `<span class="history-brand-fallback">⚡</span>`;
 
     tr.innerHTML = `
       <td>${e.fecha}</td>
