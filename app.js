@@ -2,16 +2,18 @@ const $ = (id) => document.getElementById(id);
 
 let selectedCharger = "A";
 
+const BASE = "https://raw.githubusercontent.com/davofn/CompaCarga_R5/main/icons/brands/";
+
 const BRANDS = [
   { id: "otro",      name: "Otro / Desconocido", logo: null },
-  { id: "tesla",     name: "Tesla Supercharger",  logo: "https://www.tesla.com/favicon.ico" },
-  { id: "zunder",    name: "Zunder",              logo: "https://zunder.com/favicon.ico" },
-  { id: "repsol",    name: "Repsol",              logo: "https://www.repsol.com/favicon.ico" },
-  { id: "ionity",    name: "Ionity",              logo: "https://ionity.eu/favicon.ico" },
-  { id: "iberdrola", name: "Iberdrola",           logo: "https://www.iberdrola.es/favicon.ico" },
-  { id: "wenea",     name: "Wenea",               logo: "https://wenea.com/favicon.ico" },
-  { id: "powerdot",  name: "PowerDot",            logo: "https://www.powerdot.com/favicon.ico" },
-  { id: "endesa",    name: "Endesa",              logo: "https://www.endesa.com/favicon.ico" },
+  { id: "tesla",     name: "Tesla Supercharger",  logo: BASE + "Tesla.png" },
+  { id: "zunder",    name: "Zunder",              logo: BASE + "Zunder.png" },
+  { id: "repsol",    name: "Repsol",              logo: BASE + "Repsol.png" },
+  { id: "ionity",    name: "Ionity",              logo: BASE + "Ionity.png" },
+  { id: "iberdrola", name: "Iberdrola",           logo: BASE + "Iberdrola.png" },
+  { id: "wenea",     name: "Wenea",               logo: BASE + "Wenea.png" },
+  { id: "powerdot",  name: "PowerDot",            logo: BASE + "powerdot.png" },
+  { id: "endesa",    name: "Endesa",              logo: BASE + "endesa.png" },
 ];
 
 function getBrand(id) {
