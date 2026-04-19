@@ -195,7 +195,6 @@ input::placeholder{color:#8f99aa;}
   display:flex;
   align-items:center;
   gap:12px;
-  flex-wrap:nowrap;
 }
 .brand-selector-label span{
   font-size:12px;
@@ -208,7 +207,7 @@ input::placeholder{color:#8f99aa;}
 .brand-selector-inner{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:8px;
   flex:1 1 0;
   min-width:0;
 }
@@ -221,27 +220,26 @@ input::placeholder{color:#8f99aa;}
 .brand-preview{
   display:flex;
   align-items:center;
-  flex-shrink:0;
+  flex:0 0 auto;
 }
 .brand-logo-preview{
-  width:28px;
-  height:28px;
+  width:32px;
+  height:32px;
   object-fit:contain;
-  border-radius:6px;
-  background:rgba(255,255,255,.10);
-  padding:3px;
-  flex:0 0 auto;
+  border-radius:8px;
+  background:rgba(255,255,255,.08);
+  padding:4px;
+  display:block;
 }
 .brand-logo-fallback{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  width:28px;
-  height:28px;
-  border-radius:6px;
+  width:32px;
+  height:32px;
+  border-radius:8px;
   background:rgba(255,212,0,.15);
-  font-size:14px;
-  flex:0 0 auto;
+  font-size:16px;
 }
 
 /* ── Toast ── */
@@ -303,10 +301,24 @@ button:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(255,212,0,.18), var(
   vertical-align:middle;
 }
 .td-brand{
+  /* td normal, sin flex */
+}
+.td-brand-inner{
   display:flex;
   align-items:center;
   gap:8px;
   white-space:nowrap;
+}
+.td-brand span{
+  line-height:1.3;
+}
+.history-brand-wrap{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:24px;
+  height:24px;
+  flex:0 0 24px;
 }
 .history-brand-logo{
   display:block;
@@ -316,7 +328,6 @@ button:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(255,212,0,.18), var(
   border-radius:5px;
   background:rgba(255,255,255,.08);
   padding:2px;
-  flex:0 0 24px;
 }
 .history-brand-fallback{
   display:inline-flex;

@@ -331,12 +331,12 @@ function renderHistory(){
     const tipoLabel = (e.tipo || "").toUpperCase() || "—";
 
     const logoHtml = e.brandLogo
-      ? `<img src="${e.brandLogo}" alt="${e.brandName}" class="history-brand-logo" onerror="this.outerHTML='<span class=\\'history-brand-fallback\\'>⚡</span>'">`
+      ? `<span class="history-brand-wrap"><img src="${e.brandLogo}" alt="${e.brandName}" class="history-brand-logo" onerror="this.parentElement.innerHTML='<span class=\\'history-brand-fallback\\'>⚡</span>'"></span>`
       : `<span class="history-brand-fallback">⚡</span>`;
 
     tr.innerHTML = `
       <td>${e.fecha}</td>
-      <td class="td-brand">${logoHtml}<span>${e.brandName || e.elegido}</span></td>
+      <td class="td-brand"><div class="td-brand-inner">${logoHtml}<span>${e.brandName || e.elegido}</span></div></td>
       <td><span class="${tipoColor}">${tipoLabel}</span></td>
       <td>${e.socInicio}–${e.socFinal}%</td>
       <td>${Number(e.kWh).toFixed(2)}</td>
