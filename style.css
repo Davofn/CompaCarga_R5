@@ -299,22 +299,35 @@ button:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(255,212,0,.18), var(
 .history-table tbody tr:hover{background:rgba(255,255,255,.025);}
 
 /* Brand cell in history */
-.history-table td.td-brand{
+.history-table td{
   vertical-align:middle;
 }
 .td-brand{
   display:flex;
   align-items:center;
-  gap:7px;
+  gap:8px;
+  white-space:nowrap;
 }
 .history-brand-logo{
-  width:22px; height:22px; object-fit:contain;
-  border-radius:5px; background:rgba(255,255,255,.08); padding:2px; flex:0 0 auto;
+  display:block;
+  width:24px;
+  height:24px;
+  object-fit:contain;
+  border-radius:5px;
+  background:rgba(255,255,255,.08);
+  padding:2px;
+  flex:0 0 24px;
 }
 .history-brand-fallback{
-  display:inline-flex; align-items:center; justify-content:center;
-  width:22px; height:22px; border-radius:5px;
-  background:rgba(255,212,0,.12); font-size:11px; flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:24px;
+  height:24px;
+  flex:0 0 24px;
+  border-radius:5px;
+  background:rgba(255,212,0,.12);
+  font-size:11px;
 }
 
 /* AC/DC badge */
