@@ -1,7 +1,7 @@
 const { createClient } = window.supabase;
 
 const SUPABASE_URL = "https://fzsioxqmpjmunaszrjdl.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWIiLCJyZWYiOiJmenNpb3hxbXBqbXVuYXN6cmpkbCIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzczMzI4MDUxLCJleHAiOjIwODg5MDQwNTF9.-ZUFna_TyVBNAUfgRqaJGn0siq-DIiHcCgK5h1uf6jY";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6c2lveHFtcGptdW5hc3pyamRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMjgwNTEsImV4cCI6MjA4ODkwNDA1MX0.-ZUFna_TyVBNAUfgRqaJGn0siq-DIiHcCgK5h1uf6jY";
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const $ = (id) => document.getElementById(id);
