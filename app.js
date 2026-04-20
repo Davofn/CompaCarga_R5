@@ -1,7 +1,7 @@
 const { createClient } = window.supabase;
 
 const SUPABASE_URL = "https://fzsioxqmpjmunaszrjdl.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6c2lveHFtcGptdW5hc3pyamRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMjgwNTEsImV4cCI6MjA4ODkwNDA1MX0.-ZUFna_TyVBNAUfgRqaJGn0siq-DIiHcCgK5h1uf6jY";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdWIiLCJyZWYiOiJmenNpb3hxbXBqbXVuYXN6cmpkbCIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzczMzI4MDUxLCJleHAiOjIwODg5MDQwNTF9.-ZUFna_TyVBNAUfgRqaJGn0siq-DIiHcCgK5h1uf6jY";
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const $ = (id) => document.getElementById(id);
@@ -12,14 +12,14 @@ const BASE = "https://raw.githubusercontent.com/davofn/CompaCarga_R5/main/icons/
 
 const BRANDS = [
   { id: "otro",      name: "Otro / Desconocido", logo: null },
-  { id: "tesla",     name: "Tesla Supercharger",  logo: BASE + "Tesla.png" },
-  { id: "zunder",    name: "Zunder",              logo: BASE + "Zunder.png" },
-  { id: "repsol",    name: "Repsol",              logo: BASE + "Repsol.png" },
-  { id: "ionity",    name: "Ionity",              logo: BASE + "Ionity.png" },
-  { id: "iberdrola", name: "Iberdrola",           logo: BASE + "Iberdrola.png" },
-  { id: "wenea",     name: "Wenea",               logo: BASE + "Wenea.png" },
-  { id: "powerdot",  name: "PowerDot",            logo: BASE + "powerdot.png" },
-  { id: "endesa",    name: "Endesa",              logo: BASE + "endesa.png" },
+  { id: "tesla",     name: "Tesla Supercharger", logo: BASE + "Tesla.png" },
+  { id: "zunder",    name: "Zunder",             logo: BASE + "Zunder.png" },
+  { id: "repsol",    name: "Repsol",             logo: BASE + "Repsol.png" },
+  { id: "ionity",    name: "Ionity",             logo: BASE + "Ionity.png" },
+  { id: "iberdrola", name: "Iberdrola",          logo: BASE + "Iberdrola.png" },
+  { id: "wenea",     name: "Wenea",              logo: BASE + "Wenea.png" },
+  { id: "powerdot",  name: "PowerDot",           logo: BASE + "powerdot.png" },
+  { id: "endesa",    name: "Endesa",             logo: BASE + "endesa.png" },
 ];
 
 function getBrand(id) {
@@ -101,6 +101,7 @@ async function insertCharge(entry) {
     tiempo:     entry.tiempo,
     coste:      entry.coste
   }]);
+
   if (error) throw error;
 }
 
@@ -129,7 +130,9 @@ function setSelectedCharger(charger){
   if (charger === "A" && btnA) btnA.classList.add("active");
   if (charger === "B" && btnB) btnB.classList.add("active");
 
-  if (label) label.textContent = charger === "A" ? "Cargador A" : "Cargador B";
+  if (label) {
+    label.textContent = charger === "A" ? "Cargador A" : "Cargador B";
+  }
 
   updateBrandPreview();
 }
@@ -163,10 +166,12 @@ function updateWinnerHighlight(winnerCost, winnerTime){
 
 function getLimitNote(type, power){
   const requestedPower = Number.isFinite(power) ? power : 0;
+
   if (type === "ac"){
     if (requestedPower > 11) return "Se aplica un máximo de 11 kW por límite del vehículo en AC.";
     return "Modo AC: el vehículo admite hasta 11 kW.";
   }
+
   if (requestedPower > 100) return "Se aplica un máximo de 100 kW por límite del vehículo en DC.";
   return "Modo DC: el vehículo admite hasta 100 kW y se aplica curva de carga.";
 }
@@ -192,10 +197,12 @@ function compute(){
 
   function calculateTime(power, type, start, end){
     if (power <= 0) return NaN;
+
     if (type === "ac"){
       const maxPower = Math.min(power, 11);
       return (kwhToCharge / maxPower) * 3600;
     }
+
     const maxPower = Math.min(power, 100);
     const curve = [
       { min: 0,   max: 10,  kw: 60 },
@@ -208,16 +215,21 @@ function compute(){
       { min: 90,  max: 96,  kw: 16 },
       { min: 96,  max: 100, kw: 10 }
     ];
+
     let totalSeconds = 0;
+
     for (const tramo of curve){
       if (end <= tramo.min || start >= tramo.max) continue;
+
       const tramoStart = Math.max(start, tramo.min);
       const tramoEnd = Math.min(end, tramo.max);
       const socDelta = (tramoEnd - tramoStart) / 100;
       const kwhTramo = socDelta * battery;
       const effectivePower = Math.min(maxPower, tramo.kw);
+
       totalSeconds += (kwhTramo / effectivePower) * 3600;
     }
+
     return totalSeconds;
   }
 
@@ -270,25 +282,43 @@ function compute(){
     else winnerTime = aTimeSec < bTimeSec ? "Cargador A" : "Cargador B";
   }
 
-  const winnerCostEl = $("winnerCost");
-  const winnerTimeEl = $("winnerTime");
   const diffCostEl = $("diffCost");
+  const diffTimeEl = $("diffTime");
 
-  if (winnerCostEl) winnerCostEl.textContent = winnerCost;
-  if (winnerTimeEl) winnerTimeEl.textContent = winnerTime;
+  const diffCost = bCost - aCost;
+  if (diffCostEl) {
+    if (!Number.isFinite(diffCost)) {
+      diffCostEl.textContent = "—";
+    } else if (Math.abs(diffCost) < 0.001) {
+      diffCostEl.textContent = "Empate";
+    } else {
+      const label = diffCost > 0 ? "B cuesta más" : "B cuesta menos";
+      diffCostEl.textContent = `${fmtEUR(Math.abs(diffCost))} · ${label}`;
+    }
+  }
 
-  const diff = bCost - aCost;
-  if (diffCostEl) diffCostEl.textContent = Number.isFinite(diff) ? fmtEUR(diff) : "—";
+  const diffTimeSec = bTimeSec - aTimeSec;
+  if (diffTimeEl) {
+    if (!Number.isFinite(diffTimeSec)) {
+      diffTimeEl.textContent = "—";
+    } else if (Math.abs(diffTimeSec) < 1) {
+      diffTimeEl.textContent = "Empate";
+    } else {
+      const label = diffTimeSec > 0 ? "B tarda más" : "B tarda menos";
+      diffTimeEl.textContent = `${secondsToHMS(Math.abs(diffTimeSec))} · ${label}`;
+    }
+  }
 
   updateWinnerHighlight(winnerCost, winnerTime);
 }
 
 function wire(){
   const ids = [
-    "batteryKwh","socStart","socEnd",
-    "aType","aPower","aPrice",
-    "bType","bPower","bPrice"
+    "batteryKwh", "socStart", "socEnd",
+    "aType", "aPower", "aPrice",
+    "bType", "bPower", "bPrice"
   ];
+
   ids.forEach((id) => {
     const el = $(id);
     if (!el) return;
@@ -298,8 +328,16 @@ function wire(){
 
   const btnA = $("chooseA");
   const btnB = $("chooseB");
-  if (btnA) btnA.addEventListener("click", (e) => { e.preventDefault(); setSelectedCharger("A"); });
-  if (btnB) btnB.addEventListener("click", (e) => { e.preventDefault(); setSelectedCharger("B"); });
+
+  if (btnA) btnA.addEventListener("click", (e) => {
+    e.preventDefault();
+    setSelectedCharger("A");
+  });
+
+  if (btnB) btnB.addEventListener("click", (e) => {
+    e.preventDefault();
+    setSelectedCharger("B");
+  });
 
   const brandSelect = $("brandSelect");
   if (brandSelect) brandSelect.addEventListener("change", updateBrandPreview);
@@ -401,10 +439,12 @@ function renderHistory(rows){
 
 function exportCSV(rows){
   if (!rows.length) return;
+
   let csv = "Fecha,Marca,Tipo,SOC Inicio,SOC Final,kWh,Potencia de carga (kW),Tiempo,€/kWh,Coste\n";
   rows.forEach((e) => {
     csv += `${e.fecha},${e.brand_name || ""},${e.tipo},${e.soc_inicio},${e.soc_final},${Number(e.kwh).toFixed(2)},${e.potencia},${e.tiempo},${e.precio != null ? Number(e.precio).toFixed(3) : ""},${Number(e.coste).toFixed(2)}\n`;
   });
+
   const blob = new Blob([csv], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -417,6 +457,7 @@ function exportCSV(rows){
 function initHistoryActions(){
   $("saveCharge")?.addEventListener("click", async () => {
     const data = getSelectedData();
+
     try {
       await insertCharge({
         fecha:     new Date().toLocaleString(),
@@ -432,6 +473,7 @@ function initHistoryActions(){
         tiempo:    data.tiempo,
         coste:     data.coste
       });
+
       const rows = await fetchHistory();
       renderHistory(rows);
       showToast("✓ Carga guardada");
@@ -442,6 +484,7 @@ function initHistoryActions(){
 
   $("clearHistory")?.addEventListener("click", async () => {
     if (!confirm("¿Limpiar todo el histórico?")) return;
+
     try {
       await deleteAllCharges();
       renderHistory([]);
@@ -460,6 +503,7 @@ function initHistoryActions(){
 function buildBrandSelect() {
   const select = $("brandSelect");
   if (!select) return;
+
   select.innerHTML = "";
   BRANDS.forEach(b => {
     const opt = document.createElement("option");
