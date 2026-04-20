@@ -482,7 +482,7 @@ function initHistoryActions(){
     }
   });
 
-  $("clearHistory")?.addEventListener("click", async () => {
+ /* $("clearHistory")?.addEventListener("click", async () => {
     if (!confirm("¿Limpiar todo el histórico?")) return;
 
     try {
@@ -492,7 +492,7 @@ function initHistoryActions(){
     } catch {
       showToast("✗ Error al limpiar", true);
     }
-  });
+  });*/
 
   $("exportCSV")?.addEventListener("click", async () => {
     const rows = await fetchHistory();
